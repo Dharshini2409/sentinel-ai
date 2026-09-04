@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threat Intelligence — Sentinel AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .mitre-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .mitre-card { padding: 16px; }
+  .mitre-id { font-family: var(--font-mono); color: var(--cyan); font-size: 12px; margin-bottom: 6px; }
+  .mitre-name { font-family: var(--font-head); font-weight: 600; font-size: 14px; }
+  @media (max-width: 900px) { .mitre-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+    <div><div class="brand-name">SENTINEL AI</div><div class="brand-sub">Agentic SOC Triage</div></div>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/threat-intel" class="active">Threat Intel</a>
+    <a href="/false-positives">False Positives</a>
+    <a href="/architecture">Architecture</a>
+  </div>
+  <div class="nav-status"><div class="pill"><span class="dot"></span>SYSTEM ONLINE</div></div>
+</nav>
+
+<div class="page">
+  <div class="section-title">Threat Intelligence</div>
+  <div class="section-sub">Mock IOC database used by the Threat Intel Agent to flag known-malicious indicators. No external API required for this demo.</div>
+
+  <div class="card" style="margin-bottom:30px;">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Indicator</th><th>Type</th><th>Threat</th><th>Confidence</th><th>First Seen</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for ip in ti.ips %}
+          <tr>
+            <td style="font-family:var(--font-mono)">{{ ip.indicator }}</td>
+            <td>IP</td><td>{{ ip.threat }}</td>
+            <td>{{ ip.confidence }}%</td><td>{{ ip.first_seen }}</td>
+            <td><span class="badge badge-critical">MALICIOUS</span></td>
+          </tr>
+          {% endfor %}
+          {% for d in ti.domains %}
+          <tr>
+            <td style="font-family:var(--font-mono)">{{ d.indicator }}</td>
+            <td>Domain</td><td>{{ d.threat }}</td>
+            <td>{{ d.confidence }}%</td><td>{{ d.first_seen }}</td>
+            <td><span class="badge badge-critical">MALICIOUS</span></td>
+          </tr>
+          {% endfor %}
+          {% for h in ti.hashes %}
+          <tr>
+            <td style="font-family:var(--font-mono)">{{ h.indicator }}</td>
+            <td>File Hash</td><td>{{ h.threat }}</td>
+            <td>{{ h.confidence }}%</td><td>{{ h.first_seen }}</td>
+            <td><span class="badge badge-critical">MALICIOUS</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:16px;">MITRE ATT&CK Techniques Referenced</div>
+  <div class="section-sub">Techniques commonly associated with the alert types Sentinel AI triages.</div>
+  <div class="mitre-grid" style="margin-bottom:60px;">
+    <div class="card mitre-card"><div class="mitre-id">T1078</div><div class="mitre-name">Valid Accounts</div></div>
+    <div class="card mitre-card"><div class="mitre-id">T1059</div><div class="mitre-name">Command and Scripting Interpreter</div></div>
+    <div class="card mitre-card"><div class="mitre-id">T1110</div><div class="mitre-name">Brute Force</div></div>
+    <div class="card mitre-card"><div class="mitre-id">T1486</div><div class="mitre-name">Data Encrypted for Impact</div></div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel AI — Agentic Intelligence for Security Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .hero {
+    position: relative; z-index: 1;
+    max-width: 1320px; margin: 0 auto;
+    padding: 90px 32px 60px;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 50px;
+    align-items: center;
+  }
+  .eyebrow-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px; border-radius: 20px;
+    border: 1px solid var(--border-bright);
+    background: var(--cyan-dim);
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: var(--font-head);
+    font-size: 54px;
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--cyan); }
+  .hero p.lead {
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 32px;
+  }
+  .hero-actions { display: flex; gap: 14px; margin-bottom: 44px; flex-wrap: wrap; }
+  .hero-stats { display: flex; gap: 34px; }
+  .hero-stat-num { font-family: var(--font-head); font-size: 26px; font-weight: 700; color: var(--cyan); }
+  .hero-stat-label { font-size: 11.5px; color: var(--text-faint); margin-top: 3px; }
+
+  .stream-panel {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+  }
+  .stream-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .stream-head .t { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+  .stream-list { display: flex; flex-direction: column; gap: 8px; min-height: 330px; }
+  .stream-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    opacity: 0;
+    animation: streamIn .4s ease forwards;
+  }
+  .stream-item i { width: 16px; text-align: center; }
+  .stream-item.s-info i { color: var(--cyan); }
+  .stream-item.s-warn i { color: var(--orange); }
+  .stream-item.s-crit i { color: var(--red); }
+  .stream-item.s-ok i { color: var(--green); }
+  .stream-item .rank-tag {
+    margin-left: auto;
+    background: var(--red-dim); color: var(--red);
+    padding: 2px 8px; border-radius: 6px; font-weight: 600; font-size: 11px;
+  }
+  @keyframes streamIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .how-it-works {
+    position: relative; z-index: 1;
+    max-width: 1320px; margin: 0 auto;
+    padding: 40px 32px 90px;
+  }
+  .flow-strip {
+    display: flex; align-items: center; gap: 10px;
+    overflow-x: auto;
+    padding: 8px 0 4px;
+  }
+  .flow-node {
+    flex-shrink: 0;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    font-size: 13px;
+    font-family: var(--font-head);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-faint); flex-shrink: 0; }
+
+  @media (max-width: 980px) {
+    .hero { grid-template-columns: 1fr; padding-top: 50px; }
+    .hero h1 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+    <div>
+      <div class="brand-name">SENTINEL AI</div>
+      <div class="brand-sub">Agentic SOC Triage</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="active">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/threat-intel">Threat Intel</a>
+    <a href="/false-positives">False Positives</a>
+    <a href="/architecture">Architecture</a>
+  </div>
+  <div class="nav-status">
+    <div class="pill"><span class="dot"></span>SYSTEM ONLINE</div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow-badge"><i class="fa-solid fa-brain"></i> Agentic AI Triage Pipeline</div>
+    <h1>AI that thinks<br>like a <span>SOC analyst.</span></h1>
+    <p class="lead">Transform 40 noisy security alerts into an explainable investigation queue in seconds. Five specialized agents enrich, correlate, and score every alert — so your analysts focus on what actually matters.</p>
+    <div class="hero-actions">
+      <a href="/dashboard" class="btn btn-primary"><i class="fa-solid fa-rocket"></i> Launch SOC</a>
+      <a href="#how-it-works" class="btn btn-ghost"><i class="fa-solid fa-diagram-project"></i> How It Works</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num">5</div><div class="hero-stat-label">AI AGENTS</div></div>
+      <div><div class="hero-stat-num">~64%</div><div class="hero-stat-label">WORKLOAD CUT</div></div>
+      <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">EXPLAINABLE</div></div>
+      <div><div class="hero-stat-num">0</div><div class="hero-stat-label">AUTO-REMEDIATION</div></div>
+    </div>
+  </div>
+
+  <div class="stream-panel">
+    <div class="stream-head">
+      <span class="t"><i class="fa-solid fa-satellite-dish"></i> LIVE TRIAGE STREAM</span>
+      <span class="t">ALT-001</span>
+    </div>
+    <div class="stream-list" id="streamList"></div>
+  </div>
+</section>
+
+<section class="how-it-works" id="how-it-works">
+  <div class="section-title">How It Works</div>
+  <div class="section-sub">One alert flows through five explainable agents before it ever reaches an analyst.</div>
+  <div class="flow-strip">
+    <div class="flow-node"><i class="fa-solid fa-server"></i> SIEM / EDR</div>
+    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+    <div class="flow-node"><i class="fa-solid fa-inbox"></i> Alert Intake</div>
+    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+    <div class="flow-node"><i class="fa-solid fa-layer-group"></i> Context Enrichment</div>
+    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+    <div class="flow-node"><i class="fa-solid fa-globe"></i> Threat Intelligence</div>
+    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+    <div class="flow-node"><i class="fa-solid fa-filter"></i> False Positive Check</div>
+    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+    <div class="flow-node"><i class="fa-solid fa-ranking-star"></i> Priority Ranking</div>
+    <i class="fa-solid fa-arrow-right flow-arrow"></i>
+    <div class="flow-node"><i class="fa-solid fa-user-shield"></i> Analyst Dashboard</div>
+  </div>
+  <div style="margin-top:22px;" class="human-approval-badge">
+    <i class="fa-solid fa-circle-check"></i> AI RECOMMENDS. HUMAN ANALYST APPROVES. — no alert is ever auto-remediated.
+  </div>
+</section>
+
+<div class="footer-note">SENTINEL AI — Hackathon Prototype · Built with Flask, SQLite-simple data, and explainable scoring · No real attack execution</div>
+
+<script>
+const streamEvents = [
+  {icon:"fa-inbox", cls:"s-info", text:"ALERT DETECTED — Privileged Login"},
+  {icon:"fa-layer-group", cls:"s-info", text:"CONTEXT ENRICHED — Finance-DB-01 (Critical)"},
+  {icon:"fa-globe", cls:"s-crit", text:"THREAT INTEL MATCH — Ransomware C2"},
+  {icon:"fa-filter", cls:"s-ok", text:"FALSE POSITIVE CHECK — no pattern match"},
+  {icon:"fa-ranking-star", cls:"s-warn", text:"RISK SCORE CALCULATED — 92 / 100", tag:"#1"},
+];
+const list = document.getElementById("streamList");
+let i = 0;
+function pushEvent() {
+  const e = streamEvents[i % streamEvents.length];
+  const div = document.createElement("div");
+  div.className = "stream-item " + e.cls;
+  div.innerHTML = `<i class="fa-solid ${e.icon}"></i><span>${e.text}</span>` + (e.tag ? `<span class="rank-tag">PRIORITY ${e.tag}</span>` : "");
+  list.appendChild(div);
+  if (list.children.length > 6) list.removeChild(list.firstChild);
+  i++;
+}
+pushEvent();
+setInterval(pushEvent, 1400);
+</script>
+</body>
+</html>

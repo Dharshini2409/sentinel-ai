@@ -1,0 +1,8 @@
+[
+  {"pattern": "Scheduled Vulnerability Scan", "total": 100, "false_positives": 94, "rate": 94},
+  {"pattern": "EDR Heartbeat", "total": 100, "false_positives": 98, "rate": 98},
+  {"pattern": "Backup Process", "total": 100, "false_positives": 91, "rate": 91},
+  {"pattern": "Routine Admin Login", "total": 100, "false_positives": 80, "rate": 80},
+  {"pattern": "Patch Scanning", "total": 100, "false_positives": 92, "rate": 92},
+  {"pattern": "Approved Security Scanner", "total": 100, "false_positives": 90, "rate": 90}
+]

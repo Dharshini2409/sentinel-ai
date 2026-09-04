@@ -1,0 +1,8 @@
+{
+  "admin01": {"role": "IT Administrator", "privilege": "Privileged", "department": "IT"},
+  "finance_mgr": {"role": "Finance Manager", "privilege": "Privileged", "department": "Finance"},
+  "devops01": {"role": "DevOps Engineer", "privilege": "Privileged", "department": "Engineering"},
+  "hr_user": {"role": "HR Staff", "privilege": "Normal", "department": "HR"},
+  "intern01": {"role": "Intern", "privilege": "Normal", "department": "General"},
+  "service_account": {"role": "Service Account", "privilege": "Normal", "department": "IT"}
+}

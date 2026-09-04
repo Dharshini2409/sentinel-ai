@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>False Positives — Sentinel AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .fp-card { padding: 20px; }
+  .fp-name { font-family: var(--font-head); font-weight: 600; font-size: 15px; margin-bottom: 12px; }
+  .fp-bar-track { height: 8px; border-radius: 6px; background: rgba(120,160,200,.1); overflow: hidden; margin: 10px 0; }
+  .fp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green), #16a34a); }
+  .fp-stats { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-muted); }
+  .fp-impact { margin-top: 12px; font-size: 12px; color: var(--cyan); background: var(--cyan-dim); padding: 8px 10px; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+    <div><div class="brand-name">SENTINEL AI</div><div class="brand-sub">Agentic SOC Triage</div></div>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/threat-intel">Threat Intel</a>
+    <a href="/false-positives" class="active">False Positives</a>
+    <a href="/architecture">Architecture</a>
+  </div>
+  <div class="nav-status"><div class="pill"><span class="dot"></span>SYSTEM ONLINE</div></div>
+</nav>
+
+<div class="page">
+  <div class="section-title">Known False-Positive Patterns</div>
+  <div class="section-sub">Historical data used by the False Positive Agent to detect routine noise and fight alert fatigue.</div>
+
+  <div class="grid grid-3" style="margin-bottom:60px;">
+    {% for p in patterns %}
+    <div class="card fp-card">
+      <div class="fp-name">{{ p.pattern }}</div>
+      <div class="fp-bar-track"><div class="fp-bar-fill" style="width:{{ p.rate }}%"></div></div>
+      <div class="fp-stats">
+        <span>{{ p.total }} historical alerts</span>
+        <span>{{ p.false_positives }} false positives</span>
+      </div>
+      <div class="fp-stats" style="margin-top:6px;"><span>False positive rate</span><b style="color:var(--green)">{{ p.rate }}%</b></div>
+      <div class="fp-impact"><i class="fa-solid fa-arrow-down"></i> Automatically moved lower in analyst queue.</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+</body>
+</html>

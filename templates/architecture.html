@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture — Sentinel AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .flow-col { display: flex; flex-direction: column; align-items: center; max-width: 480px; margin: 0 auto; }
+  .flow-card {
+    width: 100%; padding: 18px 22px; border-radius: 12px;
+    border: 1px solid var(--border); background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    display: flex; align-items: center; gap: 14px;
+  }
+  .flow-card.highlight { border-color: var(--border-bright); box-shadow: 0 0 26px rgba(34,211,238,.15); }
+  .flow-card i.icon { font-size: 18px; color: var(--cyan); width: 26px; text-align: center; }
+  .flow-card .title { font-family: var(--font-head); font-weight: 600; font-size: 14.5px; }
+  .flow-card .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .flow-connector { width: 2px; height: 26px; background: linear-gradient(180deg, var(--cyan), transparent); margin: 2px 0; position: relative; }
+  .flow-connector::after {
+    content: ""; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--cyan);
+  }
+  .safety-note {
+    max-width: 480px; margin: 30px auto 0; text-align: center;
+    padding: 16px; border-radius: 12px;
+    background: var(--red-dim); border: 1px solid rgba(255,59,92,.3); color: var(--red);
+    font-family: var(--font-mono); font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+    <div><div class="brand-name">SENTINEL AI</div><div class="brand-sub">Agentic SOC Triage</div></div>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/threat-intel">Threat Intel</a>
+    <a href="/false-positives">False Positives</a>
+    <a href="/architecture" class="active">Architecture</a>
+  </div>
+  <div class="nav-status"><div class="pill"><span class="dot"></span>SYSTEM ONLINE</div></div>
+</nav>
+
+<div class="page">
+  <div class="section-title">System Architecture</div>
+  <div class="section-sub" style="text-align:center; max-width:480px; margin-left:auto; margin-right:auto;">
+    A single alert flows straight down through five simple Python agents. Each agent does one job and hands the enriched alert to the next.
+  </div>
+
+  <div class="flow-col" style="margin-top:20px;">
+    <div class="flow-card"><i class="fa-solid fa-server icon"></i><div><div class="title">SIEM / EDR</div><div class="desc">Raw alerts from security tools (mocked for demo)</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card highlight"><i class="fa-solid fa-inbox icon"></i><div><div class="title">Alert Intake Agent</div><div class="desc">Normalizes format, assigns unique alert ID</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card highlight"><i class="fa-solid fa-layer-group icon"></i><div><div class="title">Context Enrichment Agent</div><div class="desc">Attaches asset criticality and user privilege</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card highlight"><i class="fa-solid fa-globe icon"></i><div><div class="title">Threat Intelligence Agent</div><div class="desc">Checks IP / domain / hash against known IOCs</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card highlight"><i class="fa-solid fa-filter icon"></i><div><div class="title">False Positive Agent</div><div class="desc">Flags alerts matching known benign patterns</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card highlight"><i class="fa-solid fa-ranking-star icon"></i><div><div class="title">Priority Ranking Agent</div><div class="desc">Computes explainable weighted risk score</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card"><i class="fa-solid fa-chart-line icon"></i><div><div class="title">Analyst Dashboard</div><div class="desc">Ranked queue with full reasoning per alert</div></div></div>
+    <div class="flow-connector"></div>
+    <div class="flow-card"><i class="fa-solid fa-user-shield icon"></i><div><div class="title">Human Decision</div><div class="desc">Analyst reviews and approves next action</div></div></div>
+  </div>
+
+  <div class="safety-note"><i class="fa-solid fa-ban"></i> No automatic remediation. Sentinel AI only recommends — a human analyst always approves.</div>
+
+  <div style="max-width:480px;margin:50px auto 80px;text-align:center;color:var(--text-faint);font-size:12.5px;">
+    Tech stack: Python + Flask backend, HTML/CSS/vanilla JS frontend, JSON-based mock data, Chart.js for analytics. No React, no Docker, no external AI dependency required.
+  </div>
+</div>
+
+</body>
+</html>

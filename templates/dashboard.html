@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Sentinel AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .dash-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-wrap: wrap; gap: 18px; margin-bottom: 26px;
+  }
+  .dash-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .empty-state {
+    text-align: center; padding: 70px 20px; color: var(--text-muted);
+    border: 1px dashed var(--border); border-radius: var(--radius);
+  }
+  .empty-state i { font-size: 30px; color: var(--cyan); margin-bottom: 14px; }
+
+  .compare-col { padding: 20px; }
+  .compare-col h4 { font-family: var(--font-head); font-size: 13px; margin-bottom: 14px; letter-spacing: .4px; }
+  .compare-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13.5px; border-bottom: 1px solid rgba(120,160,200,.07); }
+  .compare-row b { font-family: var(--font-mono); }
+
+  .summary-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(2,5,9,.85); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .summary-overlay.open { display: flex; }
+  .summary-card {
+    max-width: 720px; width: 100%;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--border-bright);
+    border-radius: 18px; padding: 36px;
+    box-shadow: 0 0 60px rgba(34,211,238,.15);
+    text-align: center;
+  }
+  .summary-title { font-family: var(--font-head); font-size: 22px; font-weight: 700; margin-bottom: 26px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 26px; }
+  .summary-num { font-family: var(--font-head); font-size: 32px; font-weight: 700; }
+  .summary-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; letter-spacing: .4px; }
+  .summary-reco {
+    text-align: left;
+    background: var(--red-dim); border: 1px solid rgba(255,59,92,.3);
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 22px; font-size: 13.5px;
+  }
+  .summary-reco b { color: var(--red); display: block; font-family: var(--font-mono); font-size: 11px; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+    <div>
+      <div class="brand-name">SENTINEL AI</div>
+      <div class="brand-sub">Agentic SOC Triage</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/dashboard" class="active">Dashboard</a>
+    <a href="/threat-intel">Threat Intel</a>
+    <a href="/false-positives">False Positives</a>
+    <a href="/architecture">Architecture</a>
+  </div>
+  <div class="nav-status">
+    <div class="pill"><span class="dot"></span>SYSTEM ONLINE</div>
+    <div class="pill dot-cyan"><span class="dot"></span>HUMAN APPROVAL REQUIRED</div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="dash-header">
+    <div>
+      <div class="section-title">SOC Triage Dashboard</div>
+      <div class="section-sub">AI recommends. Human analyst approves.</div>
+    </div>
+    <div class="dash-actions">
+      <button class="btn btn-ghost" id="btnSimulate"><i class="fa-solid fa-bolt"></i> Simulate 40 New Alerts</button>
+      <button class="btn btn-demo" id="btnDemo"><i class="fa-solid fa-play"></i> Start Hackathon Demo</button>
+    </div>
+  </div>
+
+  <!-- STATISTICS -->
+  <div class="grid grid-6" id="statsGrid" style="margin-bottom:26px;">
+    <div class="card stat-card"><div class="stat-label">Alerts Received</div><div class="stat-value cyan" id="statTotal">—</div></div>
+    <div class="card stat-card"><div class="stat-label">Critical</div><div class="stat-value red" id="statCritical">—</div></div>
+    <div class="card stat-card"><div class="stat-label">High</div><div class="stat-value orange" id="statHigh">—</div></div>
+    <div class="card stat-card"><div class="stat-label">False Positives</div><div class="stat-value" id="statFP">—</div></div>
+    <div class="card stat-card"><div class="stat-label">Average Risk</div><div class="stat-value green" id="statAvg">—</div></div>
+    <div class="card stat-card"><div class="stat-label">Analyst Time Saved</div><div class="stat-value cyan" id="statSaved">—</div></div>
+  </div>
+
+  <!-- AGENT ACTIVITY -->
+  <div class="card card-glow" style="margin-bottom:26px;">
+    <div class="section-title" style="font-size:16px;">Agent Activity</div>
+    <div class="section-sub">Five specialized agents process each alert batch in sequence.</div>
+    <div id="agentList">
+      <div class="agent-row" data-agent="intake">
+        <div class="agent-num">01</div>
+        <div class="agent-icon"><i class="fa-solid fa-inbox"></i></div>
+        <div class="agent-body"><div class="agent-name">Alert Intake Agent</div><div class="agent-detail" data-detail>Waiting for alert batch…</div></div>
+        <div class="agent-status" data-status>IDLE</div>
+      </div>
+      <div class="agent-row" data-agent="context">
+        <div class="agent-num">02</div>
+        <div class="agent-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="agent-body"><div class="agent-name">Context Enrichment Agent</div><div class="agent-detail" data-detail>Waiting for alert batch…</div></div>
+        <div class="agent-status" data-status>IDLE</div>
+      </div>
+      <div class="agent-row" data-agent="threat">
+        <div class="agent-num">03</div>
+        <div class="agent-icon"><i class="fa-solid fa-globe"></i></div>
+        <div class="agent-body"><div class="agent-name">Threat Intel Agent</div><div class="agent-detail" data-detail>Waiting for alert batch…</div></div>
+        <div class="agent-status" data-status>IDLE</div>
+      </div>
+      <div class="agent-row" data-agent="fp">
+        <div class="agent-num">04</div>
+        <div class="agent-icon"><i class="fa-solid fa-filter"></i></div>
+        <div class="agent-body"><div class="agent-name">False Positive Agent</div><div class="agent-detail" data-detail>Waiting for alert batch…</div></div>
+        <div class="agent-status" data-status>IDLE</div>
+      </div>
+      <div class="agent-row" data-agent="rank" style="margin-bottom:0;">
+        <div class="agent-num">05</div>
+        <div class="agent-icon"><i class="fa-solid fa-ranking-star"></i></div>
+        <div class="agent-body"><div class="agent-name">Priority Ranking Agent</div><div class="agent-detail" data-detail>Waiting for alert batch…</div></div>
+        <div class="agent-status" data-status>IDLE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIORITY QUEUE -->
+  <div class="card" style="margin-bottom:26px;">
+    <div class="section-title" style="font-size:16px;">Priority Investigation Queue</div>
+    <div class="section-sub">Ranked by explainable risk score. Click a row for full reasoning.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th><th>Alert</th><th>Risk</th><th>Severity</th><th>Asset</th>
+            <th>User</th><th>Threat Intel</th><th>False Positive</th><th>Confidence</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="queueBody">
+          <tr><td colspan="10" style="text-align:center; color:var(--text-faint); padding:30px;">No alerts yet. Click "Simulate 40 New Alerts" to begin.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SOC OVERVIEW -->
+  <div class="grid grid-2" style="margin-bottom:26px;">
+    <div class="card compare-col">
+      <h4><i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i> Without Sentinel AI</h4>
+      <div class="compare-row"><span>Alerts received</span><b id="cmpWithoutTotal">—</b></div>
+      <div class="compare-row"><span>Manual reviews required</span><b id="cmpWithoutManual">—</b></div>
+      <div class="compare-row"><span>Analyst effort</span><b>100%</b></div>
+    </div>
+    <div class="card compare-col">
+      <h4><i class="fa-solid fa-shield-halved" style="color:var(--cyan)"></i> With Sentinel AI</h4>
+      <div class="compare-row"><span>Alerts received</span><b id="cmpWithTotal">—</b></div>
+      <div class="compare-row"><span>Priority investigations</span><b id="cmpWithPriority">—</b></div>
+      <div class="compare-row"><span>Batch-reviewed false positives</span><b id="cmpWithFP">—</b></div>
+      <div class="compare-row"><span>Analyst workload reduction</span><b id="cmpWithReduction" style="color:var(--green)">—</b></div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="section-title" style="font-size:16px;">Analytics</div>
+  <div class="section-sub">Live breakdown of the current alert batch.</div>
+  <div class="grid grid-3" style="margin-bottom:60px;">
+    <div class="card chart-card"><div class="chart-title">Severity Distribution</div><canvas id="chartSeverity"></canvas></div>
+    <div class="card chart-card"><div class="chart-title">Risk Score Distribution</div><canvas id="chartRisk"></canvas></div>
+    <div class="card chart-card"><div class="chart-title">False Positive Reduction</div><canvas id="chartFP"></canvas></div>
+    <div class="card chart-card"><div class="chart-title">Alerts by Department</div><canvas id="chartDept"></canvas></div>
+    <div class="card chart-card"><div class="chart-title">Risk by Asset Criticality</div><canvas id="chartAsset"></canvas></div>
+    <div class="card chart-card"><div class="chart-title">Investigation Queue</div><canvas id="chartQueue"></canvas></div>
+  </div>
+
+</div>
+
+<!-- ALERT DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<!-- FINAL DEMO SUMMARY -->
+<div class="summary-overlay" id="summaryOverlay">
+  <div class="summary-card" id="summaryCard"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='charts.js') }}"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

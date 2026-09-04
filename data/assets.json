@@ -1,0 +1,11 @@
+{
+  "Finance-DB-01": {"criticality": "Critical", "department": "Finance", "owner": "finance_mgr", "environment": "Production", "internet_facing": false},
+  "Finance-Server": {"criticality": "Critical", "department": "Finance", "owner": "finance_mgr", "environment": "Production", "internet_facing": false},
+  "Payroll-App": {"criticality": "High", "department": "Finance", "owner": "finance_mgr", "environment": "Production", "internet_facing": true},
+  "Domain-Controller": {"criticality": "Critical", "department": "IT", "owner": "admin01", "environment": "Production", "internet_facing": false},
+  "CEO-Laptop": {"criticality": "High", "department": "Executive", "owner": "ceo", "environment": "Corporate", "internet_facing": true},
+  "HR-Server": {"criticality": "Medium", "department": "HR", "owner": "hr_user", "environment": "Production", "internet_facing": false},
+  "Kubernetes-Prod": {"criticality": "High", "department": "Engineering", "owner": "devops01", "environment": "Production", "internet_facing": true},
+  "VPN-Gateway": {"criticality": "High", "department": "IT", "owner": "admin01", "environment": "Production", "internet_facing": true},
+  "Backup-Server": {"criticality": "Medium", "department": "IT", "owner": "admin01", "environment": "Production", "internet_facing": false}
+}
